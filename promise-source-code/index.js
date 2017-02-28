@@ -17,7 +17,7 @@ var promise = new Promise(function (resolve, reject) {
  * value: 当前promise对象的值
  * 
 */
-function Promise(execute, value, state) {
+var Promise = function (execute, value, state) {
     this.state = state || 'pending';
     this._resolveCallback = [];
     this._rejectCallback = [];
@@ -162,3 +162,5 @@ function resolvePromise(promise, value, resolve, reject) {
         resolve(value)
     }
 }
+
+module.exports = Promise
