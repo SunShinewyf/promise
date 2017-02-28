@@ -23,20 +23,104 @@ function Promise(execute, value, state) {
     this._rejectCallback = [];
     this.value = value || null;
 
+    function resolve(value) {
+        if (value instanceof Promie) {
+            return value.then(resolve, reject);
+        }
 
+        setTimeout(function () {
+            if (this.state === 'pending') {
+                this.state = 'resolved';
+                this.value = value;
+                for (var i = 0; i < this._resolveCallback.length; i++) {
+                    this._resolveCallback[i](value)
+                }
+            }
+        })
+    }
+
+    function reject(reason) {
+        setTimeout(function () {
+            if (this.state === 'pending') {
+                this.state = 'reject';
+                this.data = reason;
+                for (var i = 0; i < this._rejectCallback.length; i++) {
+                    this._rejectCallback[i](reason)
+                }
+            }
+        })
+    }
 
     try {
-        execute && execute(this.resolve.bind(this), this.reject.bind(this))
+        execute && execute(resolve, reject)
     } catch (e) {
         that.reject(e)
     }
 }
 
-Promise.prototype = {
-    resolve: function (value) {
+Promise.prototype.then = function (resolve, reject) {
+    var self = this;
+    var promise2;
+    resolve = typeof resolve === 'function' ? resolve : function (v) {
+        return v;
+    }
+    reject = typeof reject === 'function' ? reject : function (j) {
+        throw j
+    }
 
+    if (self.state === 'resolved') {
+        return promise2 = new Promise(function (onResolve, onReject) {
+            setTimeout(function () {
+                try {
+                    var x = resolve(self.value)
+                    resolvePromise(promise2, value, resolve, reject)
+                } catch (reason) {
+                    reject(reason)
+                }
+            })
+        })
+    }
+
+    if (self.state === 'rejected') {
+        return promise2 = new Promise(function (onResolve, onReject) {
+            setTimeout(function () {
+                try {
+                    var x = reject(self.value)
+                    resolvePromise(promise2, value, resolve, reject)
+                } catch (reason) {
+                    reject(reason)
+                }
+            })
+        })
+    }
+
+    if (self.state === 'pending') {
+        return promise2 = new Promise(function (onResolve, onReject) {
+            self._resolveCallback.push(function (value) {
+                try {
+                    var x = resolve(value);
+                    resolvePromise(promise2, value, resolve, reject)
+                } catch (r) {
+                    reject(r)
+                }
+            })
+            self._rejectCallback.push(function (reason) {
+                try {
+                    var x = reject(value);
+                    resolvePromise(promise2, value, resolve, reject)
+                } catch (r) {
+                    reject(r)
+                }
+            })
+        })
     }
 }
+
+
+Promise.prototype.catch = function (onReject) {
+    return this.then(null, onReject)
+}
+
 
 function resolvePromise(promise, value, resolve, reject) {
     var then
