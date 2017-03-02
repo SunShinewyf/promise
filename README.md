@@ -30,7 +30,7 @@ this repository is about a test of promise and the source code about promise whi
     .catch(err=>console.log(err))
 ```
 (3)```catch```与```then(null,fn)```之间的差异
-```catch```其实是```then(null,fn)```的一种语法糖实现，但是两者并不等价，例如：
+catch其实是```then(null,fn)```的一种语法糖实现，但是两者并不等价，例如：
 ```javascript
    asyncFun1().then(function(data){
        throw new Error('hava an error')
