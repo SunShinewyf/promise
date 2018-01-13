@@ -3,29 +3,29 @@ let promise = new Promise((resolve, reject) => {
 });
 
 
-// promise.then((res) => {
-//     console.log('resolve', res);
-// }).catch((err) => {
-//     console.log('err', err);
-// })
+promise.then((res) => {
+    console.log('resolve', res);
+}).catch((err) => {
+    console.log('err', err);
+})
 
-// //上面等同于
-// promise.then((res) => {
-//     console.log('resolve', res);
-// }).then(null, (err) => {
-//     console.log('err', err);
-// })
+//上面等同于
+promise.then((res) => {
+    console.log('resolve', res);
+}).then(null, (err) => {
+    console.log('err', err);
+})
 
 //------------------
 //------------------
 //promise中的错误冒泡机制，可以一直往后传递到最后的那个catch中
-// promise.then((res) => {
-//     console.log('resolve', res);
-// }).then((res2) => {
-//     throw Error('err');
-// }).catch((err) => {
-//     console.log('err', err);
-// })
+promise.then((res) => {
+    console.log('resolve', res);
+}).then((res2) => {
+    throw Error('err');
+}).catch((err) => {
+    console.log('err', err);
+})
 
 
 //--------------------
