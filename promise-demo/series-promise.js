@@ -17,6 +17,31 @@ taskA().then((res1) => {
     console.log('err', err)
 })
 
+//相同场景
+let promise = new Promise((resolve,reject)=>{
+    resolve();
+})
+
+promise().then(()=>{
+    $.ajax({
+        url: 'aUrl',
+        type: 'get',
+        success:function(res){
+            return(res);
+        }
+    })
+}).then((res)=>{
+    $.ajax({
+        url: 'bUrl',
+        type: 'get',
+        data: res,
+        success: function(res){
+            return(res)
+        }
+    })
+}).then((res)=>{
+    //do something
+})
 //异步串行有关联并且未知长度的promise例子
 
 
